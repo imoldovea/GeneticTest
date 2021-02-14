@@ -22,8 +22,23 @@ def create_starting_population(individuals, chromosome_length):
         population[i, 0:ones] = 1
         np.random.shuffle(population[i])
 
-        return population
+    return population
+
+def calculate_fitness(reference, population):
+    # Create an array of True/False compared to reference
+    identical_to_reference = population == reference
+    # Sum number of genes that are identical to the reference
+    fitness_scores = identical_to_reference.sum(axis=1)
+
+    return fitness_scores
+
+
+
 
 if __name__ == '__main__':
-    #print (create_reference_solution(70))
-    print(create_starting_population(4, 10))
+    reference = create_reference_solution(10)
+    print('Reference solution: \n', reference)
+    population = create_starting_population(6, 10)
+    print('\nStarting population: \n', population)
+    scores = calculate_fitness(reference, population)
+    print('\nScores: \n', scores)
