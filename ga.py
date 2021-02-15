@@ -53,21 +53,17 @@ def select_individual_by_tournament(population, scores):
     # Fighter 1 will win if score are equal
     if fighter_1_fitness >= fighter_2_fitness:
         winner = fighter_1
+        fighter = fighter_1
     else:
         winner = fighter_2
+        fighter = fighter_2
 
     # Return the chromosome of the winner
-    return population[winner, :]
+    return population[winner, :], fighter
 
 def remove_winner(population, scores, winner):
-    individuals = len(population)
-    for i in range(individuals):
-        comparation = population[i] == winner
-        if comparation.all():
-            index=i
-            break
-    new_population=np.delete(population,index,0)
-    new_scores = np.delete(scores,index)
+    new_population=np.delete(population,winner,0)
+    new_scores = np.delete(scores,winner)
     return new_population,new_scores
 
 
@@ -129,9 +125,10 @@ if __name__ == '__main__':
 
         # Create new popualtion generating two children at a time
         for i in range(int(population_size / 2)):
-            parent_1 = select_individual_by_tournament(population, scores)
-            population, scores = remove_winner(population,scores,parent_1)
-            parent_2 = select_individual_by_tournament(population, scores)
+            parent_1, index= select_individual_by_tournament(population, scores)
+            population, scores = remove_winner(population,scores,index)
+            parent_2, index = select_individual_by_tournament(population, scores)
+            population, scores = remove_winner(population, scores, index)
             child_1, child_2 = breed_by_crossover(parent_1, parent_2)
             new_population.append(child_1)
             new_population.append(child_2)
